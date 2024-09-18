@@ -3,6 +3,7 @@ import argparse
 import math
 import numpy as np
 import torch
+import time
 from torch.utils.data import DataLoader
 from torch.optim import Adam
 from torchvision.utils import save_image
@@ -10,7 +11,7 @@ from torchvision.utils import save_image
 from utils.dataset import load_mnist, load_fmnist, denorm, select_from_dataset
 from utils.wgan import compute_gradient_penalty
 from models.QGCC import PQWGAN_CC
-from models. QGQC import PQWGAN_QC
+from models.QGQC import PQWGAN_QC
 
 def train(classes_str, dataset_str, patches, layers, n_data_qubits, batch_size, out_folder, checkpoint, randn, patch_shape, qcritic):
     classes = list(set([int(digit) for digit in classes_str]))
@@ -75,6 +76,7 @@ def train(classes_str, dataset_str, patches, layers, n_data_qubits, batch_size, 
         batches_done = checkpoint
 
     for epoch in range(n_epochs):
+        curr_time = time.time()
         for i, (real_images, _) in enumerate(dataloader):
             if not saved_initial:
                 fixed_images = generator(fixed_z)
@@ -124,7 +126,7 @@ def train(classes_str, dataset_str, patches, layers, n_data_qubits, batch_size, 
                 g_loss.backward()
                 optimizer_G.step()
 
-                print(f"[Epoch {epoch}/{n_epochs}] [Batch {i}/{len(dataloader)}] [D loss: {d_loss.item()}] [G loss: {g_loss.item()}] [Wasserstein Distance: {wasserstein_distance.item()}]")
+                print(f"[Epoch {epoch}/{n_epochs}] [Batch {i}/{len(dataloader)}] [D loss: {round(d_loss.item(),10)}] [G loss: {round(g_loss.item(),10)}] [Wasserstein Distance: {round(wasserstein_distance.item(),10)}]")
                 np.save(os.path.join(out_dir, 'wasserstein_distance.npy'), wasserstein_distance_history)
                 batches_done += n_critic
 
@@ -134,6 +136,7 @@ def train(classes_str, dataset_str, patches, layers, n_data_qubits, batch_size, 
                     torch.save(critic.state_dict(), os.path.join(out_dir, 'critic-{}.pt'.format(batches_done)))
                     torch.save(generator.state_dict(), os.path.join(out_dir, 'generator-{}.pt'.format(batches_done)))
                     print("saved images and state")
+        print(f"Epoch {epoch} took {round(((time.time() - curr_time)/60),2)} minutes\n")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -152,4 +155,4 @@ if __name__ == "__main__":
     
     train(args.classes, args.dataset, args.patches, args.layers, args.qubits, args.batch_size, args.out_folder, args.checkpoint, args.randn, tuple(args.patch_shape), args.qcritic)
 
-#python train.py --classes 01234 --dataset mnist --patches 4 --layers 2 --batch_size 32 --out_folder results
+#python3 train.py --classes 01234 --dataset mnist --patches 4 --layers 2 --batch_size 32 --out_folder results
