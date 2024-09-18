@@ -155,4 +155,4 @@ if __name__ == "__main__":
     
     train(args.classes, args.dataset, args.patches, args.layers, args.qubits, args.batch_size, args.out_folder, args.checkpoint, args.randn, tuple(args.patch_shape), args.qcritic)
 
-#python3 train.py --classes 01234 --dataset mnist --patches 4 --layers 2 --batch_size 32 --out_folder results
+#python3 train.py --classes 01234 --dataset mnist --patches 14 --layers 15 --qubits 8 --batch_size 25 --out_folder results
