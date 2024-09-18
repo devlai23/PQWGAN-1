@@ -55,7 +55,7 @@ def train(classes_str, dataset_str, patches, layers, n_data_qubits, batch_size, 
     critic = gan.critic.to(device)
     generator = gan.generator.to(device)
 
-    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=1)
+    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=1, drop_last=True)
     optimizer_G = Adam(generator.parameters(), lr=lr_G, betas=(b1, b2))
     optimizer_C = Adam(critic.parameters(), lr=lr_D, betas=(b1, b2))
     if randn:
