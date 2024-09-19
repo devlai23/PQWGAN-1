@@ -46,10 +46,10 @@ class PQWGAN_CC():
             pixels_per_patch = image_pixels // self.n_generators
             if special_shape and self.patch_shape[0] * self.patch_shape[1] != pixels_per_patch:
                 raise ValueError("patch shape and patch size dont match!")
-            output_images = torch.Tensor(x.size(0), 0)
+            output_images = torch.Tensor(x.size(0), 0).cuda()
 
             for sub_generator_param in self.params:
-                patches = torch.Tensor(0, pixels_per_patch)
+                patches = torch.Tensor(0, pixels_per_patch).cuda()
                 for item in x:
                     sub_generator_out = self.partial_trace_and_postprocess(item, sub_generator_param).float().unsqueeze(0)
                     if pixels_per_patch < patch_size:
