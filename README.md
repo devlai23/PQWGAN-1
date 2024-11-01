@@ -1,6 +1,10 @@
 # PQWGAN
 This repository contains an implementation of PQWGAN, a hybrid quantum-classical GAN framework that uses quantum circuits to enhance image generation and manipulation tasks. PQWGAN leverages the distinct features of quantum mechanics, such as superposition and entanglement, within a generative adversarial network (GAN) to explore the role of quantum computing in GAN architectures.
 
+# How to Run Through Command Line
+The model takes in multiple hyperparameters like number of qubits and layers. An example to run the model is:
+'python3 train.py --classes 01234 --dataset mnist --patches 14 --layers 15 --qubits 8 --batch_size 25 --out_folder results'
+
 # Project Overview
 PQWGAN integrates quantum circuits in both the generator and optionally the critic, allowing for enhanced data transformations and deeper exploration of GAN properties with quantum-enhanced layers. This hybrid model incorporates PennyLane for quantum circuit simulation and PyTorch for classical components, creating a versatile GAN structure that can be tuned across a range of quantum and classical parameters.
 
