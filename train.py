@@ -107,6 +107,10 @@ def train(classes_str, dataset_str, patches, layers, n_data_qubits, batch_size, 
                 saved_initial = True
 
             real_images = real_images.to(device)
+            real_images_shifted = real_images + 1
+            real_images = real_images_shifted + torch.poisson(real_images_shifted)
+            real_images -= 1
+
             optimizer_C.zero_grad()
 
             # Generate random latent vector z for fake image generation
