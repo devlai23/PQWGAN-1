@@ -8,6 +8,7 @@ from torch.utils.data import DataLoader
 from torch.optim import Adam
 from torchvision.utils import save_image
 from scipy.ndimage import map_coordinates, gaussian_filter
+from scipy.ndimage import map_coordinates, gaussian_filter
 
 from utils.dataset import load_mnist, load_fmnist, denorm, select_from_dataset
 from utils.wgan import compute_gradient_penalty
@@ -120,6 +121,10 @@ def train(classes_str, dataset_str, patches, layers, n_data_qubits, batch_size, 
     for epoch in range(n_epochs):
         curr_time = time.time()
         for i, (real_images, _) in enumerate(dataloader):
+
+            # Apply the elastic deformation to real images
+            real_images = apply_elastic_deformation(real_images)
+            
             # Save initial images for comparison
             if not saved_initial:
                 fixed_images = generator(fixed_z)
