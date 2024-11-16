@@ -7,11 +7,32 @@ import time
 from torch.utils.data import DataLoader
 from torch.optim import Adam
 from torchvision.utils import save_image
+from scipy.ndimage import map_coordinates, gaussian_filter
 
 from utils.dataset import load_mnist, load_fmnist, denorm, select_from_dataset
 from utils.wgan import compute_gradient_penalty
 from models.QGCC import PQWGAN_CC
 from models.QGQC import PQWGAN_QC
+
+# Function to apply elastic deformation to an image tensor
+def elastic_transform(image, alpha=36, sigma=6):
+    random_state = np.random.RandomState(None)
+    shape = image.shape[1:]
+    
+    dx = gaussian_filter((random_state.rand(*shape) * 2 - 1), sigma, mode="constant", cval=0) * alpha
+    dy = gaussian_filter((random_state.rand(*shape) * 2 - 1), sigma, mode="constant", cval=0) * alpha
+    
+    x, y = np.meshgrid(np.arange(shape[1]), np.arange(shape[0]))
+    indices = np.reshape(y + dy, (-1, 1)), np.reshape(x + dx, (-1, 1))
+    
+    for i in range(image.shape[0]):  # Apply transformation to each channel if needed
+        image[i] = map_coordinates(image[i], indices, order=1).reshape(shape)
+    
+    return torch.tensor(image, dtype=torch.float32)
+
+# Apply elastic deformation to a batch of images
+def apply_elastic_deformation(images, alpha=36, sigma=6):
+    return torch.stack([elastic_transform(img.numpy(), alpha, sigma) for img in images])
 
 # Main training function
 def train(classes_str, dataset_str, patches, layers, n_data_qubits, batch_size, out_folder, checkpoint, randn, patch_shape, qcritic):
