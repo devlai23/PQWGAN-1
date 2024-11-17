@@ -5,7 +5,7 @@ This repository contains an implementation of PQWGAN, a hybrid quantum-classical
 # How to Run Through Command Line
 The model takes in multiple hyperparameters like number of qubits and layers. An example to run the model is:
 ```
-python3 train.py  --classes 013 --dataset mnist --patches 28 --layers 10 --qubits 8 --batch_size 25 --out_folder results
+python train.py  --classes 013 --dataset mnist --patches 28 --layers 10 --qubits 8 --batch_size 25 --out_folder results
 ```
 This command runs the model to generate 0,1,2,3,4 with 14 patches, 15 layers, 8 qubits, and a batch size of 25. It puts the generated images into a folder called results.
 
