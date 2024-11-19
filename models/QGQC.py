@@ -56,7 +56,6 @@ class PQWGAN_QC():
             sign = torch.sign(x)
             x = torch.abs(x) * torch.pi/2 - 0.001  # Avoid infinite values during tan calculation
             x *= sign
-            print(torch.tan(x))  # Debugging output
             # Return the tan of the adjusted output
             return torch.tan(x)
 
