@@ -4,17 +4,17 @@ import math
 import numpy as np
 import torch
 import time
+import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
 from torch.optim import Adam
 from torchvision.utils import save_image
 
 from utils.dataset import load_mnist, load_fmnist, denorm, select_from_dataset
 from utils.wgan import compute_gradient_penalty
-from models.QGCC import PQWGAN_CC
 from models.QGQC import PQWGAN_QC
 
 # Main training function
-def train(classes_str, dataset_str, patches, layers, n_data_qubits, batch_size, out_folder, checkpoint, randn, patch_shape, qcritic):
+def train(classes_str, dataset_str, patches, layers, n_data_qubits, batch_size, out_folder, checkpoint, randn, patch_shape):
     # Convert the input classes (digits) from string format to a list of integers
     classes = list(set([int(digit) for digit in classes_str]))
 
@@ -38,10 +38,7 @@ def train(classes_str, dataset_str, patches, layers, n_data_qubits, batch_size, 
         qubits = math.ceil(math.log(image_size ** 2 // patches, 2)) + ancillas
 
     # Set learning rates depending on whether the critic is quantum or classical
-    if qcritic:
-        lr_D = 0.01  # Higher learning rate for quantum critic
-    else:
-        lr_D = 0.0002  # Standard learning rate for classical critic
+    lr_D = 0.01  # Higher learning rate for quantum critic
     lr_G = 0.01  # Learning rate for the generator
     b1 = 0  # Beta1 hyperparameter for Adam optimizer
     b2 = 0.9  # Beta2 hyperparameter for Adam optimizer
@@ -59,11 +56,7 @@ def train(classes_str, dataset_str, patches, layers, n_data_qubits, batch_size, 
     
     os.makedirs(out_dir,exist_ok=True)
 
-    # Initialize GAN model based on critic type (quantum or classical)
-    if qcritic:
-        gan = PQWGAN_QC(image_size=image_size, channels=channels, n_generators=patches, n_gen_qubits=qubits, n_ancillas=ancillas, n_gen_layers=layers, patch_shape=patch_shape, n_critic_qubits=10, n_critic_layers=175)
-    else:
-        gan = PQWGAN_CC(image_size=image_size, channels=channels, n_generators=patches, n_qubits=qubits, n_ancillas=ancillas, n_layers=layers, patch_shape=patch_shape)
+    gan = PQWGAN_QC(image_size=image_size, channels=channels, n_generators=patches, n_gen_qubits=qubits, n_ancillas=ancillas, n_gen_layers=layers, patch_shape=patch_shape, n_critic_qubits=10, n_critic_layers=175)
 
     # Separate the generator and critic components and move them to the specified device (CPU)
     critic = gan.critic.to(device)
@@ -98,7 +91,7 @@ def train(classes_str, dataset_str, patches, layers, n_data_qubits, batch_size, 
     # Main training loop
     for epoch in range(n_epochs):
         curr_time = time.time()
-        for i, (real_images, _) in enumerate(dataloader):
+        for i, (real_images, _) in enumerate(dataloader):                                    
             # Save initial images for comparison
             if not saved_initial:
                 fixed_images = generator(fixed_z)
@@ -107,6 +100,13 @@ def train(classes_str, dataset_str, patches, layers, n_data_qubits, batch_size, 
                 saved_initial = True
 
             real_images = real_images.to(device)
+                        
+            # add gaussian noise to half of the images
+            noise = np.random.normal(0, 0.5, [28,28])                        
+            real_images[0:batch_size//2] = real_images[0:batch_size//2] + noise
+            real_images = np.clip(real_images, 0, 255)
+            real_images = real_images.to(torch.float32)
+            
             optimizer_C.zero_grad()
 
             # Generate random latent vector z for fake image generation
@@ -172,8 +172,7 @@ if __name__ == "__main__":
     parser.add_argument("-c", "--checkpoint", help="checkpoint to load from", type=int, default=0)
     parser.add_argument("-rn", "--randn", help="use normal prior, otherwise use uniform prior", action="store_true")
     parser.add_argument("-ps", "--patch_shape", help="shape of sub-generator output (H, W)", default=[None,None], type=int, nargs=2)
-    parser.add_argument("-qc", "--qcritic", help="use quantum critic", action="store_true")
     args = parser.parse_args()
     
     # Call the training function with parsed arguments
-    train(args.classes, args.dataset, args.patches, args.layers, args.qubits, args.batch_size, args.out_folder, args.checkpoint, args.randn, tuple(args.patch_shape), args.qcritic)
+    train(args.classes, args.dataset, args.patches, args.layers, args.qubits, args.batch_size, args.out_folder, args.checkpoint, args.randn, tuple(args.patch_shape))
