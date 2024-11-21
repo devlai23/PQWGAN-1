@@ -1,0 +1,1 @@
+python3 train.py  --classes 013 --dataset mnist --patches 14 --layers 17 --qubits 6 --batch_size 25 --out_folder results_noise_new_param
