@@ -11,7 +11,7 @@ from torchvision.utils import save_image
 
 from utils.dataset import load_mnist, load_fmnist, denorm, select_from_dataset
 from utils.wgan import compute_gradient_penalty
-from models.QGQC import PQWGAN_QC
+from models.QGCC import PQWGAN_CC
 
 # Main training function
 def train(classes_str, dataset_str, patches, layers, n_data_qubits, batch_size, out_folder, checkpoint, randn, patch_shape):
@@ -38,7 +38,7 @@ def train(classes_str, dataset_str, patches, layers, n_data_qubits, batch_size, 
         qubits = math.ceil(math.log(image_size ** 2 // patches, 2)) + ancillas
 
     # Set learning rates depending on whether the critic is quantum or classical
-    lr_D = 0.01  # Higher learning rate for quantum critic
+    lr_D = 0.0002  # Standard learning rate for classical critic
     lr_G = 0.01  # Learning rate for the generator
     b1 = 0  # Beta1 hyperparameter for Adam optimizer
     b2 = 0.9  # Beta2 hyperparameter for Adam optimizer
@@ -56,8 +56,8 @@ def train(classes_str, dataset_str, patches, layers, n_data_qubits, batch_size, 
     
     os.makedirs(out_dir,exist_ok=True)
 
-    gan = PQWGAN_QC(image_size=image_size, channels=channels, n_generators=patches, n_gen_qubits=qubits, n_ancillas=ancillas, n_gen_layers=layers, patch_shape=patch_shape, n_critic_qubits=10, n_critic_layers=175)
-
+    gan = PQWGAN_CC(image_size=image_size, channels=channels, n_generators=patches, n_qubits=qubits, n_ancillas=ancillas, n_layers=layers, patch_shape=patch_shape)
+    
     # Separate the generator and critic components and move them to the specified device (CPU)
     critic = gan.critic.to(device)
     generator = gan.generator.to(device)
@@ -102,10 +102,10 @@ def train(classes_str, dataset_str, patches, layers, n_data_qubits, batch_size, 
             real_images = real_images.to(device)
                         
             # add gaussian noise to half of the images
-            noise = np.random.normal(0, 0.5, [28,28])                        
-            real_images[0:batch_size//2] = real_images[0:batch_size//2] + noise
-            real_images = np.clip(real_images, 0, 255)
-            real_images = real_images.to(torch.float32)
+            # noise = np.random.normal(0, 0.5, [28,28])                        
+            # real_images[0:batch_size//2] = real_images[0:batch_size//2] + noise
+            # real_images = np.clip(real_images, 0, 255)
+            # real_images = real_images.to(torch.float32)
             
             optimizer_C.zero_grad()
 
