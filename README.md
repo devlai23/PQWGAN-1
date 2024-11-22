@@ -58,23 +58,24 @@ To prepare the dataset for training the Quantum Wasserstein GAN (QWGAN), the fol
 1. **Normalization**: Pixel values were scaled to the range of [0,1] by dividing by 255. This was done to ensure the uniformity of input data and stabilizes the training process
 2. **Incorporating Data Modification Techniques**: To evaluate the robustness and adaptability of the QWGAN, the dataset was augmented with the following techniques:
 
-For Elastic Transforms:
-Definition: Elastic Transforms apply spatial distributions to an image by remapping the pixel locations based on smoothed displacement fields. These transforms are intended to mimic real-world deformations, such as stretching, twisting, or wrapping, while preserving the overall structure of the image. 
-Purpose: To simulate natural variations in image shapes and test the model's ability to generalize beyond perfectly aligned data, and encourage the generator to learn invariant features that remain robust under shape changes.
-Implementation:
-Random values (dx and dy) are created for each pixel using a random state, representing the displacement along the x and y-axes. These values are scaled by α to control the intensity of the distortion.
-The displacements are passed through a Gaussian filter with a standard deviation (𝜎) to ensure the distortions are smooth and realistic, avoiding abrupt pixel shifts.
-A grid of original pixel indices (x and 𝑦) is created to serve as the base for displacement calculations.
-The new pixel locations are calculated by adding the smoothed displacements to the original coordinates. The map_coordinates function remaps the pixel values to these new positions, creating the warped effect.
+  - **Elastic Transforms**:
+    - **Definition**: Elastic Transforms apply spatial distributions to an image by remapping the pixel locations based on smoothed displacement fields. These transforms are intended to mimic real-world deformations, such as stretching, twisting, or wrapping, while preserving the overall structure of the image. 
+    - **Purpose**: To simulate natural variations in image shapes and test the model's ability to generalize beyond perfectly aligned data, and encourage the generator to learn invariant features that remain robust under shape changes.
+    - **Implementation**: 
+      - Random values (dx and dy) are created for each pixel using a random state, representing the displacement along the x and y-axes. These values are scaled by α to control the intensity of the distortion.
+      - The displacements are passed through a Gaussian filter with a standard deviation (𝜎) to ensure the distortions are smooth and realistic, avoiding abrupt pixel shifts.
+      - A grid of original pixel indices (x and 𝑦) is created to serve as the base for displacement calculations.
+      - The new pixel locations are calculated by adding the smoothed displacements to the original coordinates. The map_coordinates function remaps the pixel values to these new positions, creating the warped effect.
 
-For Gaussian Noise:
-Definition: Adds noise with a probability density function equal to a normal distribution
-Purpose: The goal was to add light gaussian noise to the input during training in order to have more varied samples for a wider variety of outputs. The hope was that it would help the model output better looking numbers sooner.
-Implementation: For every black and white pixel in the image, noise is sampled from a normal distribution and added to each pixel value
-
-For Poisson Noise: Definition: Poisson noise is a type of noise that arises from the random nature of events. In real world scenarios this could include photons hitting a sensor in a variable manner
-Purpose: Simulating poisson noise is commonly used to mimic the noise you might get from real-world data and imaging systems. 
-Implementation: For every pixel (I) in the image, noise is sampled from a Poisson distribution (N). Then the pixel value is replaced with I + N. The Poisson distribution essentially applied slight, random variations to the number around its original value. 
+  - **Gaussian Noise**:
+    - **Definition**: Adds noise with a probability density function equal to a normal distribution
+    - **Purpose**: The goal was to add light gaussian noise to the input during training in order to have more varied samples for a wider variety of outputs. The hope was that it would help the model output better looking numbers sooner.
+    - **Implementation**: For every black and white pixel in the image, noise is sampled from a normal distribution and added to each pixel value
+    
+  - **Poisson Noise**:
+    - **Definition**: Poisson noise is a type of noise that arises from the random nature of events. In real world scenarios this could include photons hitting a sensor in a variable manner
+    - **Purpose**: Simulating poisson noise is commonly used to mimic the noise you might get from real-world data and imaging systems. 
+    - **Implementation**: For every pixel (I) in the image, noise is sampled from a Poisson distribution (N). Then the pixel value is replaced with I + N. The Poisson distribution essentially applied slight, random variations to the number around its original value. 
 
 # Results
 The results of running our model are promising. There are several things to note. One, the Wasserstein distance starts low and increases. This is the phase in which the critic is still learning to differentiate between real and generated samples during the early stages. The generator also initially produces poor quality results with lots of noise, which the critic distinguishes as a high Wasserstein distance. As the model continues running, the generator improves but with fluctuations that are common in GAN training. This specific example was run with the following command line parameters: 28 patches, 5 qubits, 10 layers. Possible implications of this setup include a high number of patches being reflected in the stability of the training process, since the image generation is split into smaller, more manageable sections. 5 qubits on the other hand is on the lower side, and increasing the count could allow the generator to learn more complex features.
@@ -82,12 +83,14 @@ The results of running our model are promising. There are several things to note
 Adding noise: Results TBA
 
 # Conclusion
-Summary: 
+**Summary**:
 Classical GANs are producing extremely realistic results with QGANs still far away from those levels. However, QGANs are still a promising area of research. This paper shows a method of generating 28 x 28 pixel images of handwritten numbers. We successfully generated a three class subset of the MNIST dataset: 0/1/3. Even though classical GANs have been able to do this, we achieved this task with three orders of magnitude fewer trainable parameters in the generator. Furthermore, we found that by adding noise to a percentage of the training samples ……
 
-Impact: These findings further the promise of quantum machine learning by showing that it has huge potential against classical models with billions of parameters. If a quantum version could be created, it has the chance to decrease the resources needed by multiple magnitudes. Quantum machine learning could be the solution to problems unsolvable before due to a restriction of technological capabilities.
+**Impact**:
+These findings further the promise of quantum machine learning by showing that it has huge potential against classical models with billions of parameters. If a quantum version could be created, it has the chance to decrease the resources needed by multiple magnitudes. Quantum machine learning could be the solution to problems unsolvable before due to a restriction of technological capabilities.
 
-Future Work: Suggest potential improvements or extensions to your research.
+**Future Work**:
+Suggest potential improvements or extensions to your research.
 We suggest a future direction in applying quantum generators to more complex and higher-resolution images. We were restricted in our computing power and were only capable of training models on 28 x 28 black and white pixel images.
 
 # References
