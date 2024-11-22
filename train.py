@@ -102,10 +102,10 @@ def train(classes_str, dataset_str, patches, layers, n_data_qubits, batch_size, 
             real_images = real_images.to(device)
                         
             # add gaussian noise to half of the images
-            # noise = np.random.normal(0, 0.5, [28,28])                        
-            # real_images[0:batch_size//2] = real_images[0:batch_size//2] + noise
-            # real_images = np.clip(real_images, 0, 255)
-            # real_images = real_images.to(torch.float32)
+            noise = np.random.normal(0, 0.2, [28,28])                        
+            real_images[0:batch_size//2] = real_images[0:batch_size//2] + noise
+            real_images = np.clip(real_images, 0, 255)
+            real_images = real_images.to(torch.float32)
             
             optimizer_C.zero_grad()
 
