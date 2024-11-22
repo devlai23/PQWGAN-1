@@ -11,7 +11,13 @@ From this Wasserterian GANs (WGANs) came into the picture of improving the way t
 
 However, WGANs rely on deep neural networks to minimize the Wasserstein Distance. This poses challenges such as high computational costs, larger parameter spaces, and scalability issues for higher dimensional datasets. 
 
-Quantum Advantage:
+## Objectives:
+1. Build a Quantum Wasserstein GAN (QWGAN) by integrating a Parameterized Quantum Circuit (PQC) as the generator and a classical neural network as the critic, combining the strengths of quantum computing and classical optimization.
+2. Apply the QWGAN framework to simple datasets, such as MNIST (handwritten digits) to evaluate its ability to generate realistic and diverse outputs as a proof of concept.
+3. Incorporate Data Modification Techniques such as Elastic Transforms, Gaussian noise, and Poisson noise to test the robustness of the QWGAN framework. 
+4. Compare QWGAN performance with such data modification techniques against one another. 
+
+## Quantum Advantage:
 Quantum Machine Learning offers a fundamentally new computational paradigm that addresses the limitations of WGANs in terms of computational cost, scalability, and representation efficiency by using a Quantum Wasserstein Adversarial Network (QWGAN).
 
 Unlike a traditional GAN, In a QWGAN, the generator which creates fake data is replaced by a Quantum Computer. This quantum generator uses special properties of quantum systems such as superposition (representing multiple probabilities at once) and entanglement (connections between quantum states), to generate data more efficiently and with greater diversity. 
@@ -21,12 +27,6 @@ QWGANs leverage quantum properties like superposition and entanglement to allow 
 However this efficiency can also become a drawback when QWGANs are trained on idealized datasets, which are often clean, consistent, and lack real-world variability. Because the quantum generator is highly efficient at modeling the exact distribution it is trained on, it may overfit to the training data, learning to replicate specific patterns/relationships without understanding the underlying structure of the data. This overfitting can result in poor performance when QWGANs are exposed to noisy, distorted, or incomplete data that deviates from the idealized training set.
 
 To address this limitation, we incorporated data augmentation techniques to simulate real-world imperfections, such as noise and distortions, which challenge the model to learn more robust and invariant features.
-
-Objectives:
-Build a Quantum Wasserstein GAN (QWGAN) by integrating a Parameterized Quantum Circuit (PQC) as the generator and a classical neural network as the critic, combining the strengths of quantum computing and classical optimization.
-Apply the QWGAN framework to simple datasets, such as MNIST (handwritten digits) to evaluate its ability to generate realistic and diverse outputs as a proof of concept.
-Incorporate Data Modification Techniques such as Elastic Transforms, Gaussian noise, and Poisson noise to test the robustness of the QWGAN framework. 
-Compare QWGAN performance with such data modification techniques against one another. 
 
 # How to Run Through Command Line
 The model takes in multiple hyperparameters like number of qubits and layers. An example to run the model is:
@@ -45,19 +45,18 @@ The following is the quantum circuit used in each quantum sub-generator.
 The circuit must first translate the latent vector mentioned earlier into a superposition state, which is done by applying a quantum Ry gate (Y Rotation). After this initialization the qubit will then undergo a series of parametrized rotation gates, determined by the # of layers specified by the user. This process is repeated a number of times. For each iteration, a rotation is applied using a number of parameters that will be tweaked in collaboration with the generator throughout the entire training process. After each patch has a rotation gate applied, they are then entangled with one another using a CNOT gate. This creates correlations between each patch. After this process, each patch is combined back together to form the final image.
 
 # Dataset and Preprocessing
-Data Description: Provide key details about the dataset (source, size, features, etc.).
+
+## Data Description: Provide key details about the dataset (source, size, features, etc.).
 The dataset used for this project was MNSIT, a widely used benchmark dataset for image recognition tasks. 
-Source: National Institute of Standards and Technology (NIST).
-Size: 70,000 grayscale images, split into training set of 60,000 images, and a testing set of 10,000 images 
-Features: Each image is 28x28 pixels, representing handwritten digits spanning 0-9.
-Pixel Values: Grayscale intensity values range from 0 (black) to 255 (white).  
+- Source: National Institute of Standards and Technology (NIST).
+- Size: 70,000 grayscale images, split into training set of 60,000 images, and a testing set of 10,000 images 
+- Features: Each image is 28x28 pixels, representing handwritten digits spanning 0-9.
+- Pixel Values: Grayscale intensity values range from 0 (black) to 255 (white).  
  
-Preprocessing Steps: Outline any data preprocessing techniques applied (normalization, feature scaling, dimensionality reduction).
+## Preprocessing Steps: Outline any data preprocessing techniques applied (normalization, feature scaling, dimensionality reduction).
 To prepare the dataset for training the Quantum Wasserstein GAN (QWGAN), the following preprocessing steps were applied:
-Normalization:
-Pixel values were scaled to the range of [0,1] by dividing by 255. This was done to ensure the uniformity of input data and stabilizes the training process
-Incorporating Data Modification Techniques:
-To evaluate the robustness and adaptability of the QWGAN, the dataset was augmented with the following techniques:
+1. Normalization: Pixel values were scaled to the range of [0,1] by dividing by 255. This was done to ensure the uniformity of input data and stabilizes the training process
+2. Incorporating Data Modification Techniques: To evaluate the robustness and adaptability of the QWGAN, the dataset was augmented with the following techniques:
 
 For Elastic Transforms:
 Definition: Elastic Transforms apply spatial distributions to an image by remapping the pixel locations based on smoothed displacement fields. These transforms are intended to mimic real-world deformations, such as stretching, twisting, or wrapping, while preserving the overall structure of the image. 
