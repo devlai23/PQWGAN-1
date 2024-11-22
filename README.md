@@ -3,22 +3,22 @@
 # Introduction
 
 ## Motivation: 
-A traditional Generative Adversarial Network (GAN) is a machine learning model composed of two neural networks: A Generator (creates fake data), and a Discriminator (distinguishes between real and fake data). The 2 Neural Networks compete in a feedback loop until the generator is able to create fake data that is seemingly indistinguishable from real data. 
+A traditional Generative Adversarial Network **(GAN)** is a machine learning model composed of two neural networks: A Generator (creates fake data), and a Discriminator (distinguishes between real and fake data). The 2 Neural Networks compete in a feedback loop until the generator is able to create fake data that is seemingly indistinguishable from real data. 
 
 Traditional GANs measure the difference between real and fake data using the Jensen-Shannon Divergence. However, this method of measurement becomes problematic when the distributions of fake and real data have similarities. This can lead to unstable training and limited diversity in generating outputs. 
 
-From this Wasserterian GANs (WGANs) came into the picture of improving the way traditional GANs measure difference between real and fake data by using the Wasserstein Distance. The Wasserstein Distance is a metric that calculates the minimum cost of transforming the fake probability distribution into the real probability distribution by optimizing the cost function that considers the amount of probability mass moved in the distance it travels in the feature space. 
+From this Wasserterian GANs **(WGANs)** came into the picture of improving the way traditional GANs measure difference between real and fake data by using the Wasserstein Distance. The Wasserstein Distance is a metric that calculates the minimum cost of transforming the fake probability distribution into the real probability distribution by optimizing the cost function that considers the amount of probability mass moved in the distance it travels in the feature space. 
 
 However, WGANs rely on deep neural networks to minimize the Wasserstein Distance. This poses challenges such as high computational costs, larger parameter spaces, and scalability issues for higher dimensional datasets. 
 
 ## Objectives:
 1. Build a Quantum Wasserstein GAN (QWGAN) by integrating a Parameterized Quantum Circuit (PQC) as the generator and a classical neural network as the critic, combining the strengths of quantum computing and classical optimization.
-2. Apply the QWGAN framework to simple datasets, such as MNIST (handwritten digits) to evaluate its ability to generate realistic and diverse outputs as a proof of concept.
-3. Incorporate Data Modification Techniques such as Elastic Transforms, Gaussian noise, and Poisson noise to test the robustness of the QWGAN framework. 
+2. Apply the QWGAN framework to simple datasets, such as **MNIST** (handwritten digits) to evaluate its ability to generate realistic and diverse outputs as a proof of concept.
+3. Incorporate Data Modification Techniques such as **Elastic Transforms**, **Gaussian noise**, and **Poisson noise** to test the robustness of the QWGAN framework. 
 4. Compare QWGAN performance with such data modification techniques against one another. 
 
 ## Quantum Advantage:
-Quantum Machine Learning offers a fundamentally new computational paradigm that addresses the limitations of WGANs in terms of computational cost, scalability, and representation efficiency by using a Quantum Wasserstein Adversarial Network (QWGAN).
+Quantum Machine Learning offers a fundamentally new computational paradigm that addresses the limitations of WGANs in terms of computational cost, scalability, and representation efficiency by using a Quantum Wasserstein Adversarial Network **(QWGAN)**.
 
 Unlike a traditional GAN, In a QWGAN, the generator which creates fake data is replaced by a Quantum Computer. This quantum generator uses special properties of quantum systems such as superposition (representing multiple probabilities at once) and entanglement (connections between quantum states), to generate data more efficiently and with greater diversity. 
 
@@ -48,15 +48,15 @@ The circuit must first translate the latent vector mentioned earlier into a supe
 
 ## Data Description: Provide key details about the dataset (source, size, features, etc.).
 The dataset used for this project was MNSIT, a widely used benchmark dataset for image recognition tasks. 
-- Source: National Institute of Standards and Technology (NIST).
-- Size: 70,000 grayscale images, split into training set of 60,000 images, and a testing set of 10,000 images 
-- Features: Each image is 28x28 pixels, representing handwritten digits spanning 0-9.
-- Pixel Values: Grayscale intensity values range from 0 (black) to 255 (white).  
+- **Source**: National Institute of Standards and Technology (NIST).
+- **Size**: 70,000 grayscale images, split into training set of 60,000 images, and a testing set of 10,000 images 
+- **Features**: Each image is 28x28 pixels, representing handwritten digits spanning 0-9.
+- **Pixel Values**: Grayscale intensity values range from 0 (black) to 255 (white).  
  
 ## Preprocessing Steps: Outline any data preprocessing techniques applied (normalization, feature scaling, dimensionality reduction).
 To prepare the dataset for training the Quantum Wasserstein GAN (QWGAN), the following preprocessing steps were applied:
-1. Normalization: Pixel values were scaled to the range of [0,1] by dividing by 255. This was done to ensure the uniformity of input data and stabilizes the training process
-2. Incorporating Data Modification Techniques: To evaluate the robustness and adaptability of the QWGAN, the dataset was augmented with the following techniques:
+1. **Normalization**: Pixel values were scaled to the range of [0,1] by dividing by 255. This was done to ensure the uniformity of input data and stabilizes the training process
+2. **Incorporating Data Modification Techniques**: To evaluate the robustness and adaptability of the QWGAN, the dataset was augmented with the following techniques:
 
 For Elastic Transforms:
 Definition: Elastic Transforms apply spatial distributions to an image by remapping the pixel locations based on smoothed displacement fields. These transforms are intended to mimic real-world deformations, such as stretching, twisting, or wrapping, while preserving the overall structure of the image. 
