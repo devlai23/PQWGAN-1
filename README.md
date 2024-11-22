@@ -9,6 +9,8 @@ Traditional GANs measure the difference between real and fake data using the Jen
 
 From this Wasserterian GANs **(WGANs)** came into the picture of improving the way traditional GANs measure difference between real and fake data by using the Wasserstein Distance. The Wasserstein Distance is a metric that calculates the minimum cost of transforming the fake probability distribution into the real probability distribution by optimizing the cost function that considers the amount of probability mass moved in the distance it travels in the feature space. 
 
+![alt text](readme_images/formula.png)
+
 However, WGANs rely on deep neural networks to minimize the Wasserstein Distance. This poses challenges such as high computational costs, larger parameter spaces, and scalability issues for higher dimensional datasets. 
 
 ## Objectives:
@@ -38,9 +40,13 @@ This command runs the model to generate 0,1,3, with 14 patches, 17 layers, 6 qub
 # Methods
 The quantum framework that we used in this project is Pennylane. 
 
+![alt text](readme_images/architecture.png)
+
 The architecture of the model is as follows. First, random vectors are sampled from a latent space, to be fed into the quantum generator. The quantum generator is the main component for generating the images. The quantum generator is split into many sub-generators that create “patches” of the image, a parameter that can be tweaked for performance. Each sub-generator contains a quantum circuit that processes part of the image. After going through the quantum circuit, the patches are then combined together to form a full picture. The generated sample is then compared to a “real sample,” an image taken directly from the dataset. Using a critic (neural network) the generated and real samples are compared for accuracy. The unit for accuracy is the Wasserstein Distance, helping us quantify how similar the produced images are to actual ones. The generator then receives feedback from the critic every cycle, tweaking its parameters to lower the Wasserstein Distance. The critic also simultaneously trains itself to better assess differences between real and generated samples.
 
 The following is the quantum circuit used in each quantum sub-generator.
+
+![alt text](readme_images/circuit.png)
 
 The circuit must first translate the latent vector mentioned earlier into a superposition state, which is done by applying a quantum Ry gate (Y Rotation). After this initialization the qubit will then undergo a series of parametrized rotation gates, determined by the # of layers specified by the user. This process is repeated a number of times. For each iteration, a rotation is applied using a number of parameters that will be tweaked in collaboration with the generator throughout the entire training process. After each patch has a rotation gate applied, they are then entangled with one another using a CNOT gate. This creates correlations between each patch. After this process, each patch is combined back together to form the final image.
 
@@ -78,6 +84,9 @@ To prepare the dataset for training the Quantum Wasserstein GAN (QWGAN), the fol
     - **Implementation**: For every pixel (I) in the image, noise is sampled from a Poisson distribution (N). Then the pixel value is replaced with I + N. The Poisson distribution essentially applied slight, random variations to the number around its original value. 
 
 # Results
+
+![alt text](readme_images/graph.png)
+
 The results of running our model are promising. There are several things to note. One, the Wasserstein distance starts low and increases. This is the phase in which the critic is still learning to differentiate between real and generated samples during the early stages. The generator also initially produces poor quality results with lots of noise, which the critic distinguishes as a high Wasserstein distance. As the model continues running, the generator improves but with fluctuations that are common in GAN training. This specific example was run with the following command line parameters: 28 patches, 5 qubits, 10 layers. Possible implications of this setup include a high number of patches being reflected in the stability of the training process, since the image generation is split into smaller, more manageable sections. 5 qubits on the other hand is on the lower side, and increasing the count could allow the generator to learn more complex features.
 
 Adding noise: Results TBA
