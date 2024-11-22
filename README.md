@@ -2,7 +2,7 @@
 
 # Introduction
 
-Motivation: 
+## Motivation: 
 A traditional Generative Adversarial Network (GAN) is a machine learning model composed of two neural networks: A Generator (creates fake data), and a Discriminator (distinguishes between real and fake data). The 2 Neural Networks compete in a feedback loop until the generator is able to create fake data that is seemingly indistinguishable from real data. 
 
 Traditional GANs measure the difference between real and fake data using the Jensen-Shannon Divergence. However, this method of measurement becomes problematic when the distributions of fake and real data have similarities. This can lead to unstable training and limited diversity in generating outputs. 
