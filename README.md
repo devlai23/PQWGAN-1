@@ -1,4 +1,4 @@
-# Title
+# Data Augmentations on Hybrid Quantum-Classical Generative Adversarial Networks
 
 # Introduction
 
