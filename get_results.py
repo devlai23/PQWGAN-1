@@ -4,8 +4,7 @@ import matplotlib.pyplot as plt
 
 
 # Specify the path to your .npy file
-file_path = 'PQWGAN/results_28_patch_new/01_28p_10l_25bs/wasserstein_distance.npy'
-
+file_path = 'PQWGAN/results_noise_new_param/013_14p_17l_25bs/wasserstein_distance.npy'
 
 # Load the .npy file
 data = np.load(file_path)
